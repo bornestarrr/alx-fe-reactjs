@@ -1,39 +1,35 @@
-import React, { useState } from 'react';
-import { useRecipeStore } from '../recipeStore';
+import { useState } from 'react';
+import { useRecipeStore } from './recipeStore';
 
-const EditRecipeForm = ({ recipe }) => {
+const EditRecipeForm = ({ recipe, onClose }) => {
   const updateRecipe = useRecipeStore(state => state.updateRecipe);
   const [title, setTitle] = useState(recipe.title);
   const [description, setDescription] = useState(recipe.description);
-  const [editing, setEditing] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    updateRecipe({ ...recipe, title, description });
-    setEditing(false);
+  const handleSubmit = (event) => {
+    event.preventDefault(); // <== This is the missing part
+    updateRecipe({
+      id: recipe.id,
+      title,
+      description
+    });
+    onClose(); // Optional: Close form after updating
   };
 
-  if (!editing) {
-    return <button onClick={() => setEditing(true)}>Edit</button>;
-  }
-
   return (
-    <form onSubmit={handleSubmit} style={{marginTop: '10px'}}>
+    <form onSubmit={handleSubmit}>
       <input
         type="text"
         value={title}
         onChange={e => setTitle(e.target.value)}
-        required
-        style={{marginRight: '10px', padding: '5px'}}
+        placeholder="Title"
       />
       <textarea
         value={description}
         onChange={e => setDescription(e.target.value)}
-        rows={3}
-        style={{marginRight: '10px', padding: '5px'}}
+        placeholder="Description"
       />
-      <button type="submit" style={{marginRight: '5px'}}>Save</button>
-      <button type="button" onClick={() => setEditing(false)}>Cancel</button>
+      <button type="submit">Save Changes</button>
     </form>
   );
 };
