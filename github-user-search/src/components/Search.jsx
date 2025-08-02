@@ -10,14 +10,6 @@ const Search = () => {
   const [noResults, setNoResults] = useState(false);
   const [error, setError] = useState("");
 
-  const buildQuery = (username, location, minRepos) => {
-    let query = "";
-    if (username) query += `${username} `;
-    if (location) query += `location:${location} `;
-    if (minRepos) query += `repos:>=${minRepos}`;
-    return query.trim();
-  };
-
   const handleSearch = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -26,8 +18,7 @@ const Search = () => {
     setUsers([]);
 
     try {
-      const query = buildQuery(username, location, minRepos);
-      const results = await fetchUserData(query);
+      const results = await fetchUserData(username, location, minRepos);
       if (results.length === 0) {
         setNoResults(true);
       }
