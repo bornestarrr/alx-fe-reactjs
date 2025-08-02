@@ -1,41 +1,42 @@
-import React, { useState } from 'react';
-import githubService from '../services/githubService';
+import React, { useState } from "react";
+import { fetchUserData } from "../services/githubService";
 
 const Search = () => {
-  const [username, setUsername] = useState('');
-  const [location, setLocation] = useState('');
-  const [minRepos, setMinRepos] = useState('');
+  const [username, setUsername] = useState("");
+  const [location, setLocation] = useState("");
+  const [minRepos, setMinRepos] = useState("");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [noResults, setNoResults] = useState(false);
+  const [error, setError] = useState("");
+
+  const buildQuery = (username, location, minRepos) => {
+    let query = "";
+    if (username) query += `${username} `;
+    if (location) query += `location:${location} `;
+    if (minRepos) query += `repos:>=${minRepos}`;
+    return query.trim();
+  };
 
   const handleSearch = async (e) => {
     e.preventDefault();
     setLoading(true);
     setNoResults(false);
+    setError("");
+    setUsers([]);
 
     try {
       const query = buildQuery(username, location, minRepos);
-      const data = await githubService.searchUsers(query);
-      if (data.items.length === 0) {
+      const results = await fetchUserData(query);
+      if (results.length === 0) {
         setNoResults(true);
       }
-      setUsers(data.items);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      setUsers([]);
-      setNoResults(true);
+      setUsers(results);
+    } catch (err) {
+      setError("Looks like we cant find the user");
     } finally {
       setLoading(false);
     }
-  };
-
-  const buildQuery = (username, location, minRepos) => {
-    let query = '';
-    if (username) query += `${username} `;
-    if (location) query += `location:${location} `;
-    if (minRepos) query += `repos:>=${minRepos}`;
-    return query.trim();
   };
 
   return (
@@ -77,6 +78,10 @@ const Search = () => {
         <p className="text-center text-red-500 font-semibold">
           Looks like we cant find the user.
         </p>
+      )}
+
+      {error && (
+        <p className="text-center text-red-500 font-semibold">{error}</p>
       )}
 
       <div className="grid gap-4">
