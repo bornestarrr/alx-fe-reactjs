@@ -4,21 +4,30 @@ export default function RegistrationForm() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!username || !email || !password) {
-      setError("All fields are required");
+    if (!username) {
+      setErrors("Username is required");
       return;
     }
 
-    setError("");
+    if (!email) {
+      setErrors("Email is required");
+      return;
+    }
+
+    if (!password) {
+      setErrors("Password is required");
+      return;
+    }
+
+    setErrors("");
 
     // mock API call
     console.log("User Registered:", { username, email, password });
-
     alert("Registration successful!");
 
     // reset
@@ -34,7 +43,7 @@ export default function RegistrationForm() {
     >
       <h2 className="text-xl font-bold">Controlled Registration Form</h2>
 
-      {error && <p className="text-red-500">{error}</p>}
+      {errors && <p className="text-red-500">{errors}</p>}
 
       <input
         type="text"
