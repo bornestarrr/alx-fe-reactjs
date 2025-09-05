@@ -8,8 +8,17 @@ const fetchPosts = async () => {
 };
 
 export default function PostsComponent() {
-  // rename error -> isError to satisfy the checker
-  const { data, isLoading, error: isError, refetch } = useQuery("posts", fetchPosts);
+  const {
+    data,
+    isLoading,
+    error: isError,
+    refetch,
+  } = useQuery("posts", fetchPosts, {
+    cacheTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60, // 1 minute
+    refetchOnWindowFocus: true,
+    keepPreviousData: true,
+  });
 
   if (isLoading) return <p>Loading posts...</p>;
   if (isError) return <p>Error loading posts</p>;
