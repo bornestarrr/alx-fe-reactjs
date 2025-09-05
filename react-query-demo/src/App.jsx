@@ -2,7 +2,7 @@ import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import PostsComponent from "./components/PostsComponent";
 
-// Create a query client
+// Create QueryClient
 const queryClient = new QueryClient();
 
 function App() {
